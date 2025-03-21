@@ -1,31 +1,32 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
-import { Link } from "expo-router"; 
+import { View, Text, Image, StyleSheet } from "react-native";
+import { Link } from "expo-router";
+import SignScreen from "./connexion"; // Importez votre composant de connexion
 
 const Accueil = () => {
   return (
     <View style={styles.container}>
       {/* Barre de navigation en haut avec les liens "Inscription" et "Connexion" */}
-      <View style={styles.navbar}>
-        <Link href="/form/inscription" style={styles.navbarLink}>
-          <Text style={styles.navbarText}>Inscription</Text>
-        </Link>
-        <Link href="/form/connexion" style={styles.navbarLink}>
-          <Text style={styles.navbarText}>Connexion</Text>
-        </Link>
+      
+
+      {/* Conteneur principal pour diviser la page en deux */}
+      <View style={styles.mainContainer}>
+        {/* Partie gauche pour le logo */}
+        <View style={styles.leftSection}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require('/home/divine/Stage-Djoli/projet_lella/EllaEnqueteTerrain/assets/images/Design sans titre (1).png')}
+              style={styles.logo}
+            />
+          </View>
+          <Text style={styles.text}>Le 1er Abattoir Moderne de Volaille</Text>
+        </View>
+
+        {/* Partie droite pour le formulaire de connexion */}
+        <View style={styles.rightSection}>
+          <SignScreen /> {/* Intégrez le formulaire de connexion ici */}
+        </View>
       </View>
-
-      {/* Conteneur avec fond vert pour l'image */}
-      <View style={styles.imageContainer}>
-        <Image
-          source={require('/home/divine/Stage-Djoli/projet_lella/EllaEnqueteTerrain/assets/images/Design sans titre (1).png')}
-          style={styles.logo}
-        />
-      </View>
-
-      {/* Message de bienvenue */}
-      <Text style={styles.text}>Le 1er Abbatoir Moderne de Volaille</Text>
-
     </View>
   );
 };
@@ -34,8 +35,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#aec075', // Fond de la page
-    justifyContent: 'center', // Centre le contenu verticalement
-    alignItems: 'center', // Centre le contenu horizontalement
     position: 'relative', // Pour positionner les boutons en absolu
   },
   navbar: {
@@ -56,6 +55,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  mainContainer: {
+    flex: 1,
+    flexDirection: 'row', // Divise la page en deux sections
+    justifyContent: 'space-between', // Espace entre les sections
+    alignItems: 'center', // Centre verticalement
+    paddingHorizontal: 20, // Espacement horizontal
+  },
+  leftSection: {
+    flex: 1, // Occupe la moitié de l'espace
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rightSection: {
+    flex: 1, // Occupe la moitié de l'espace
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   imageContainer: {
     backgroundColor: '#aec075', // Fond de l'image
     justifyContent: 'center',
@@ -65,32 +81,14 @@ const styles = StyleSheet.create({
     marginBottom: 20, // Espace sous l'image
   },
   logo: {
-    width: 500, // Ajuste la taille de l'image
-    height: 200, // Ajuste la taille de l'image
+    width: 300, // Ajuste la taille de l'image
+    height: 150, // Ajuste la taille de l'image
   },
   text: {
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 30, // Espace entre le texte et les boutons
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 20, // Positionne les boutons en bas
-    right: 20, // Positionne les boutons à droite
-    width: '80%', // Gère la largeur des boutons
-  },
-  button: {
-    backgroundColor: '#aec075', // Couleur de fond du bouton
-    padding: 15, // Espacement interne du bouton
-    borderRadius: 5, // Bord arrondi du bouton
-    alignItems: 'center', // Centre le texte horizontalement
-    marginBottom: 10, // Espace entre les boutons
-  },
-  buttonText: {
-    color: 'white', // Couleur du texte du bouton
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 

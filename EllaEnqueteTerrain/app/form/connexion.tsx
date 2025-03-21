@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import {
   View,
   Text,
@@ -7,17 +7,57 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Alert,
 } from "react-native";
 
 const SignScreen = () => {
-  const [name, setName] = useState("");
+  const [phone_number, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter(); // Pour la navigation
 
-  const handleLogin = () => {
-    // Logique de connexion ici
-    console.log("Nom :", name);
-    console.log("Mot de passe :", password);
+
+  const handleLogin = async () => {
+    // Vérifiez que les champs ne sont pas vides
+    if (!phone_number || !password) {
+      Alert.alert("Erreur", "Veuillez remplir tous les champs.");
+      return;
+    }
+
+    // Données à envoyer à l'API
+    const data = {
+      phone_number: phone_number,
+      password: password,
+    };
+
+    try {
+      // Envoyer la requête POST à l'API
+      const response = await fetch("https://lellagn-project.onrender.com/api/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      // Traiter la réponse
+      const result = await response.json();
+
+      if (response.ok) {
+        // Si la connexion est réussie
+        Alert.alert("Succès", result.message || "Connexion réussie !");
+        // Rediriger l'utilisateur vers une autre page
+        router.push("/form/page"); // Remplacez par la route souhaitée
+      } else {
+        // Si la connexion échoue
+        Alert.alert("Erreur", result.message || "Identifiants incorrects.");
+      }
+    } catch (error) {
+      // Gérer les erreurs réseau ou autres
+      console.error("Erreur lors de la connexion :", error);
+      Alert.alert("Erreur", "Une erreur s'est produite. Veuillez réessayer.");
+    }
   };
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -27,13 +67,14 @@ const SignScreen = () => {
       </Text>
 
       <View style={styles.form}>
-              <Text style={styles.label}>Votre nom</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Entrez votre nom"
-                value={name}
-                onChangeText={setName}
-              />
+                <Text style={styles.label}>Votre numéro de téléphone</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="0123456789"
+                        value={phone_number}
+                        onChangeText={setPhone}
+                        keyboardType="phone-pad"
+                      />
 
         <Text style={styles.label}>Mot de passe</Text>
         <TextInput
@@ -44,16 +85,17 @@ const SignScreen = () => {
           secureTextEntry
         />
 
-        <Link href="/form/page" style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>Se connecter</Text>
-         </Link>
+<TouchableOpacity style={styles.button} onPress={handleLogin}>
+  <Text style={styles.buttonText}>Se connecter</Text>
+</TouchableOpacity>
 
-        <Text style={styles.footerText}>
-          Vous n'avez pas de compte ?{" "}
-          <Link href="/form/inscription" style={styles.Link}>
-              S'inscrire
-          </Link>
-        </Text>
+<Text style={styles.footerText}>
+  Vous n'avez pas de compte ?{" "}
+  <Link href="/form/inscription" style={styles.link}>
+    S'inscrire
+  </Link>
+</Text>
+
       </View>
     </ScrollView>
   );
@@ -65,7 +107,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#aec075",
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
   },
   title: {
     fontSize: 24,

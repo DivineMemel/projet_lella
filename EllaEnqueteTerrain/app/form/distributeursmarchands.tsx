@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const questions = [
     {
@@ -192,16 +192,50 @@ const RandomSurveyForm = () => {
   const navigation = useNavigation();
   const [currentQuestions, setCurrentQuestions] = useState(getRandomQuestions());
 
-  
-  const onSubmit = (data) => {
-    console.log("Données soumises :", data);
-    reset(); // Réinitialiser le formulaire
-    setCurrentQuestions(getRandomQuestions()); // Générer un nouveau groupe de questions
+
+  const onSubmit = async (data) => {
+    console.log("Données du formulaire :", data); // Affichez les données dans la console
+    const formattedResponses = currentQuestions.map((q) => ({
+      question_id: q.id,
+      answer: Array.isArray(data[`question_${q.id}`])
+        ? data[`question_${q.id}`].join(", ") // Si plusieurs réponses, les joindre
+        : data[`question_${q.id}`] || "", // Sinon, utiliser la réponse unique
+    }));
+    console.log("Réponses formatées :", formattedResponses); // Affichez les réponses formatées
+    // Données à envoyer à l'API
+    const payload = {
+      form_type_id: 1, // ID du formulaire (à adapter selon le formulaire)
+      responses: formattedResponses,
+    };
+
+    try {
+      // Envoyer les données à l'API
+      const response = await fetch("https://lellagn-project.onrender.com/apiquiz-responses/create/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Succès", "Vos réponses ont été soumises avec succès !");
+        reset(); // Réinitialiser le formulaire
+        setCurrentQuestions(getRandomQuestions()); // Générer un nouveau groupe de questions
+      } else {
+        Alert.alert("Erreur", result.message || "Une erreur s'est produite.");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la soumission :", error);
+      Alert.alert("Erreur", "Une erreur s'est produite. Veuillez réessayer.");
+    }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Formulaire Distributeurs et Marchands</Text>
+      <Text style={styles.title}>Enquête Distributeurs et Marchands</Text>
       <View style={styles.form}>
 
         {/* Nom */}
@@ -235,24 +269,64 @@ const RandomSurveyForm = () => {
         />
 
         {/* Questions aléatoires */}
-        {currentQuestions.map((q) => (
+        {currentQuestions.map((q, index) => (
           <View key={q.id} style={styles.questionContainer}>
-            <Text style={styles.label}>{q.question}</Text>
-            {q.options.map((option, index) => (
+            <Text style={styles.label}>{`${index + 1}. ${q.question}`}</Text>
+            
+            {/* Champ de texte si pas d'options */}
+            {q.options.length === 0 ? (
               <Controller
-                key={index}
                 control={control}
-                name={`question_${q.id}`}
                 render={({ field }) => (
-                  <TouchableOpacity
-                    style={[styles.option, field.value === option && styles.selectedOption]}
-                    onPress={() => field.onChange(option)}
-                  >
-                    <Text style={[styles.optionText, field.value === option && styles.selectedOptionText]}>{option}</Text>
-                  </TouchableOpacity>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Votre réponse"
+                    value={field.value}
+                    onChangeText={field.onChange}
+                  />
                 )}
+                name={`question_${q.id}`}
               />
-            ))}
+            ) : (
+              q.options.map((option, optIndex) => (
+                <Controller
+                  key={optIndex}
+                  control={control}
+                  name={`question_${q.id}`}
+                  render={({ field }) => {
+                    let selectedValues = Array.isArray(field.value) ? field.value : field.value ? [field.value] : [];
+              
+                    return (
+                      <TouchableOpacity
+                        style={[
+                          styles.option,
+                          selectedValues.includes(option) && styles.selectedOption
+                        ]}
+                        onPress={() => {
+                          let newValue = [...selectedValues];
+                          if (newValue.includes(option)) {
+                            newValue = newValue.filter((val) => val !== option);
+                          } else {
+                            newValue.push(option);
+                          }
+                          field.onChange(newValue);
+                        }}
+                      >
+                        <Text
+                          style={[
+                            styles.optionText,
+                            selectedValues.includes(option) && styles.selectedOptionText
+                          ]}
+                        >
+                          {option}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  }}
+                />
+              ))
+              
+            )}
           </View>
         ))}
 
@@ -288,6 +362,14 @@ const styles = StyleSheet.create({
   form: {
     width: "100%",
     maxWidth: 400,
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   questionContainer: {
     marginBottom: 15,
@@ -336,7 +418,7 @@ const styles = StyleSheet.create({
   quitButton: {
     height: 50,
     borderRadius: 5,
-    backgroundColor: "#d9534f",
+    backgroundColor: "#deb078",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,

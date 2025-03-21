@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "expo-router";  // Importez useRouter pour la redirection
 import { Link } from "expo-router"; 
 
 import {
@@ -11,18 +12,48 @@ import {
 } from "react-native";
 
 const LoginScreen = () => {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone_number, setPhone] = useState("");
+  const [username, setName] = useState("");
   const [password, setPassword] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
-
-  const handleLogin = () => {
-    // Logique d'inscription ici
-    console.log("Nom :", name);
-    console.log("Numéro de téléphone :", phone);
-    console.log("Mot de passe :", password);
-    console.log("Accepté les termes :", agreeTerms);
+  const router = useRouter();
+  const handleLogin = async () => {
+    if (!username || !phone_number || !password || !agreeTerms) {
+      alert("Veuillez remplir tous les champs et accepter les conditions.");
+      return;
+    }
+  
+    const data = {
+      username,
+      phone_number,
+      password,
+    };
+  
+    try {
+      const response = await fetch("https://lellagn-project.onrender.com/api/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      const result = await response.json();
+      console.log("Réponse API :", result); // Debug dans la console
+  
+      if (response.ok) {
+        alert("Inscription réussie !");
+        router.push("/form/page");
+      } else {
+        alert(result.message || `Erreur: ${JSON.stringify(result)}`);
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      alert("Erreur de connexion, veuillez réessayer.");
+    }
   };
+  
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -32,21 +63,22 @@ const LoginScreen = () => {
       </Text>
 
       <View style={styles.form}>
+
+      <Text style={styles.label}>Votre numéro de téléphone</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="0123456789"
+          value={phone_number}
+          onChangeText={setPhone}
+          keyboardType="phone-pad"
+        />
+        
         <Text style={styles.label}>Votre nom</Text>
         <TextInput
           style={styles.input}
           placeholder="Entrez votre nom"
-          value={name}
+          value={username}
           onChangeText={setName}
-        />
-
-        <Text style={styles.label}>Votre numéro de téléphone</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="0123456789"
-          value={phone}
-          onChangeText={setPhone}
-          keyboardType="phone-pad"
         />
 
         <Text style={styles.label}>Mot de passe</Text>
@@ -71,14 +103,18 @@ const LoginScreen = () => {
           </Text>
         </View>
 
-        <Link href="/form/page" style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>S'inscrire / Se connecter</Text>
-        </Link>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>S'inscrire</Text>
+        </TouchableOpacity>
+
 
         <Text style={styles.footerText}>
           Vous avez déjà un compte ?{" "}
-          <Text style={styles.link}>Se connecter</Text>
+          <Link href="/form/accueil" style={styles.link}>
+          Se connecter
+          </Link>
         </Text>
+        
       </View>
     </ScrollView>
   );

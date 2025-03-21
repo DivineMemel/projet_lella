@@ -7,202 +7,199 @@ import { useNavigation } from "@react-navigation/native";
 const questions = [
     {
       id: 1,
-      question: "Quel type d’établissement dirigez-vous ?",
-      options: ["Restaurant", "Fast-food", "Maquis / Choukouya", "Hôtel", "Cantine scolaire / d’entreprise", "Traiteur"],
+      question: "Combien de fois par semaine consommez-vous du poulet ?",
+      options: ["1 fois", "2 à 3 fois", "4 fois ou plus", "Rarement ou jamais"],
     },
     {
       id: 2,
-      question: "Depuis combien de temps votre établissement est-il en activité ?",
-      options: [],
+      question: "Où achetez-vous le plus souvent votre poulet ?",
+      options: [
+        "Marché",
+        "Supermarché",
+        "Boucherie",
+        "Directement chez un producteur/ferme",
+        "En ligne",
+        "Autre (préciser)",
+      ],
     },
     {
       id: 3,
-      question: "Combien de clients servez-vous en moyenne par jour ?",
-      options: [],
+      question: "Quel type de poulet achetez-vous le plus souvent ?",
+      options: ["Local (élevé en Guinée)", "Importé", "Je ne sais pas"],
     },
     {
       id: 4,
-      question: "Combien de poulets achetez-vous en moyenne par jour ?",
-      options: [],
+      question: "Sous quelle forme achetez-vous votre poulet ?",
+      options: [
+        "Entier",
+        "Découpé (filets, cuisses, ailes)",
+        "Déjà préparé (mariné, pané, prêt à cuire)",
+        "Transformé (nuggets, saucisses, etc.)",
+      ],
     },
     {
       id: 5,
-      question: "À quelle fréquence passez-vous commande pour du poulet ?",
-      options: ["Tous les jours", "Plusieurs fois par semaine", "Une fois par semaine", "Moins d’une fois par semaine"],
+      question: "Achetez-vous du poulet congelé ou frais ?",
+      options: ["Toujours frais", "Toujours congelé", "Indifférent"],
     },
     {
       id: 6,
-      question: "Où achetez-vous actuellement vos poulets ?",
-      options: ["Marché local", "Fournisseur direct", "Grossiste", "Importateur"],
+      question: "Quel est le critère le plus important pour vous lorsque vous achetez du poulet ?",
+      options: [
+        "Le prix",
+        "La fraîcheur",
+        "Le goût",
+        "L'origine (local/importé)",
+        "La facilité d’accès (lieu de vente)",
+        "Autre (préciser)",
+      ],
     },
     {
       id: 7,
-      question: "Préférez-vous acheter du poulet local ou importé ? Pourquoi ?",
-      options: [],
+      question: "Si le poulet local coûtait un peu plus cher que l’importé, seriez-vous prêt(e) à l’acheter ?",
+      options: ["Oui", "Non", "Peut-être"],
     },
     {
       id: 8,
-      question: "Quel type de poulet préférez-vous acheter ?",
-      options: ["Poulet entier", "Poulet vidé prêt à cuire", "Poulet découpé (cuisses, ailes, filets)"],
+      question: "À quelle occasion achetez-vous du poulet ? (Plusieurs réponses possibles.)",
+      options: [
+        "Repas quotidien",
+        "Week-end",
+        "Fêtes et événements spéciaux",
+        "Autre (préciser)",
+      ],
     },
     {
       id: 9,
-      question: "Quel est le poids idéal d’un poulet pour votre activité ?",
-      options: ["Petit (1 - 1,2 kg)", "Moyen (1,3 - 1,5 kg)", "Grand (+1,6 kg)"],
+      question: "Combien êtes-vous prêt(e) à payer pour 1 kg de poulet local ?",
+      options: [
+        "Moins de 50 000 GNF",
+        "50 000 - 70 000 GNF",
+        "Plus de 70 000 GNF",
+        "Je ne fais pas attention au prix",
+      ],
     },
     {
       id: 10,
-      question: "Achetez-vous du poulet frais ou congelé ? Pourquoi ?",
-      options: [],
+      question: "Quelle quantité de poulet achetez-vous en moyenne par mois ?",
+      options: ["Moins de 1 kg", "1 à 3 kg", "4 à 6 kg", "Plus de 6 kg"],
     },
     {
       id: 11,
-      question: "Quelles sont vos exigences en matière de qualité du poulet ?",
-      options: ["Chair tendre", "Bonne conservation", "Saveur naturelle"],
+      question: "Savez-vous comment différencier un poulet local d’un poulet importé ?",
+      options: ["Oui", "Non"],
     },
     {
       id: 12,
-      question: "À quel moment de la journée préférez-vous être livré(e) ?",
-      options: ["Matin", "Après-midi", "Soir"],
+      question: "Selon vous, quels sont les avantages du poulet local ? (Plusieurs réponses possibles.)",
+      options: [
+        "Meilleur goût",
+        "Plus sain (moins d’additifs)",
+        "Soutien aux producteurs locaux",
+        "Meilleure qualité",
+        "Autre (préciser)",
+      ],
     },
     {
       id: 13,
-      question: "Quelle est votre principale contrainte pour acheter du poulet local ?",
-      options: ["Prix", "Disponibilité", "Fraîcheur", "Poids du poulet", "Autre (préciser)"],
+      question: "Et quels sont ses inconvénients ? (Plusieurs réponses possibles.)",
+      options: [
+        "Plus cher",
+        "Moins disponible",
+        "Qualité variable",
+        "Temps de cuisson plus long",
+        "Autre (préciser)",
+      ],
     },
     {
       id: 14,
-      question: "Selon vous, le prix actuel du poulet local est-il :",
-      options: ["Trop cher", "Raisonnable", "Pas assez cher (si la qualité est améliorée)"],
+      question: "Selon vous, quels sont les avantages du poulet importé ? (Plusieurs réponses possibles.)",
+      options: [
+        "Moins cher",
+        "Plus disponible",
+        "Facile à cuisiner",
+        "Autre (préciser)",
+      ],
     },
     {
       id: 15,
-      question: "Si la qualité était garantie, accepteriez-vous de payer un peu plus cher pour du poulet local ?",
-      options: ["Oui", "Non", "Peut-être"],
+      question: "Et quels sont ses inconvénients ? (Plusieurs réponses possibles.)",
+      options: [
+        "Moins savoureux",
+        "Qualité incertaine",
+        "Utilisation de conservateurs",
+        "Autre (préciser)",
+      ],
     },
     {
       id: 16,
-      question: "Comment jugez-vous la qualité du poulet local actuellement sur le marché ?",
-      options: ["Excellente", "Bonne", "Moyenne", "Mauvaise"],
+      question: "Êtes-vous satisfait(e) du poulet vendu actuellement sur le marché ?",
+      options: [
+        "Très satisfait(e)",
+        "Assez satisfait(e)",
+        "Peu satisfait(e)",
+        "Pas du tout satisfait(e)",
+      ],
     },
     {
       id: 17,
-      question: "Quelles améliorations souhaitez-vous voir dans le poulet local ?",
-      options: ["Meilleure texture", "Goût plus prononcé", "Moins de gras", "Conservation plus longue"],
+      question: "Avez-vous déjà eu une mauvaise expérience avec du poulet acheté ?",
+      options: [
+        "Oui, manque de fraîcheur",
+        "Oui, goût ou texture inhabituelle",
+        "Oui, problème de conservation",
+        "Non, jamais",
+      ],
     },
     {
       id: 18,
-      question: "Avez-vous déjà rencontré des problèmes de qualité avec le poulet local ?",
-      options: ["Oui (préciser)", "Non"],
+      question: "Quel est votre principal frein à l’achat du poulet local ?",
+      options: [
+        "Le prix",
+        "La disponibilité",
+        "La confiance dans la qualité",
+        "Autre (préciser)",
+      ],
     },
     {
       id: 19,
-      question: "Comment stockez-vous vos poulets actuellement ?",
-      options: ["Réfrigérateur", "Congélateur", "Glace / Glacière", "Pas de stockage (achat quotidien)"],
+      question: "Que faudrait-il améliorer dans l’offre de poulet local ? (Plusieurs réponses possibles.)",
+      options: [
+        "Plus de points de vente",
+        "Meilleure traçabilité et étiquetage",
+        "Meilleure qualité et contrôle",
+        "Prix plus abordables",
+        "Autre (préciser)",
+      ],
     },
     {
       id: 20,
-      question: "Quelle est votre durée moyenne de stockage avant cuisson ?",
-      options: ["Moins de 24h", "2 à 3 jours", "4 à 7 jours", "Plus d’une semaine"],
+      question: "Recommanderiez-vous le poulet local à vos proches ?",
+      options: ["Oui, toujours", "Oui, mais avec des réserves", "Non"],
     },
     {
       id: 21,
-      question: "Avez-vous déjà eu des pertes de poulets à cause d’un mauvais stockage ?",
-      options: ["Oui", "Non"],
+      question: "Aimeriez-vous voir plus de promotions et réductions sur le poulet local ?",
+      options: ["Oui", "Non", "Indifférent"],
     },
     {
       id: 22,
-      question: "Préférez-vous recevoir des poulets emballés sous vide ou en vrac ?",
-      options: ["Sous vide", "En vrac", "Indifférent"],
-    },
-    {
-      id: 23,
-      question: "Qui s’occupe de l’achat du poulet dans votre établissement ?",
-      options: ["Moi-même", "Mon cuisinier", "Un employé dédié", "Autre (préciser)"],
-    },
-    {
-      id: 24,
-      question: "Quelle est la distance entre votre établissement et votre point d’approvisionnement ?",
-      options: ["Moins de 5 km", "5 - 10 km", "Plus de 10 km"],
-    },
-    {
-      id: 25,
-      question: "Faites-vous appel à un fournisseur qui vous livre directement ?",
-      options: ["Oui", "Non"],
-    },
-    {
-      id: 26,
-      question: "Quel délai de livraison vous conviendrait le mieux ?",
-      options: ["Moins de 2 heures", "Moins de 6 heures", "Livraison programmée la veille"],
-    },
-    {
-      id: 27,
-      question: "Avez-vous déjà eu des problèmes de retard ou d’annulation de livraison ?",
-      options: ["Oui", "Non"],
-    },
-    {
-      id: 28,
-      question: "Comment évaluez-vous votre expérience avec vos fournisseurs actuels ?",
-      options: ["Très satisfait(e)", "Assez satisfait(e)", "Peu satisfait(e)", "Pas du tout satisfait(e)"],
-    },
-    {
-      id: 29,
-      question: "Quels sont les problèmes les plus fréquents rencontrés avec vos fournisseurs ?",
-      options: ["Qualité variable", "Rupture de stock fréquente", "Retards de livraison", "Prix fluctuants"],
-    },
-    {
-      id: 30,
-      question: "Êtes-vous intéressé(e) par un fournisseur exclusif de poulet local de qualité ?",
+      question: "Souhaiteriez-vous avoir un service de livraison de poulet local à domicile ?",
       options: ["Oui", "Non", "Peut-être"],
     },
     {
-      id: 31,
-      question: "Êtes-vous prêt(e) à signer un contrat d’approvisionnement avec un fournisseur local ?",
-      options: ["Oui", "Non", "À voir selon les conditions"],
-    },
-    {
-      id: 32,
-      question: "Vos clients demandent-ils du poulet local spécifiquement ?",
+      id: 23,
+      question: "Seriez-vous intéressé(e) par un programme de fidélité sur l’achat de poulet local ?",
       options: ["Oui", "Non"],
     },
     {
-      id: 33,
-      question: "Proposez-vous du poulet local sur votre menu ?",
+      id: 24,
+      question: "Préférez-vous acheter du poulet avec un label de qualité (bio, fermier, certification locale) ?",
       options: ["Oui", "Non"],
     },
     {
-      id: 34,
-      question: "Avez-vous remarqué une tendance des clients à privilégier des produits locaux ?",
-      options: ["Oui", "Non"],
-    },
-    {
-      id: 35,
-      question: "Quel type de plat à base de poulet est le plus commandé dans votre établissement ?",
-      options: ["Choukouya", "Poulet braisé", "Poulet en sauce", "Poulet frit"],
-    },
-    {
-      id: 36,
-      question: "Seriez-vous intéressé(e) par un service de livraison automatisé de poulet local ?",
-      options: [],
-    },
-    {
-      id: 37,
-      question: "Quelles attentes avez-vous envers un fournisseur de poulet local ?",
-      options: [],
-    },
-    {
-      id: 38,
-      question: "Quel est votre principal frein à l’achat de poulet local ?",
-      options: [],
-    },
-    {
-      id: 39,
-      question: "Comment les producteurs locaux pourraient-ils mieux répondre aux besoins des restaurateurs ?",
-      options: [],
-    },
-    {
-      id: 40,
-      question: "Quelles améliorations attendez-vous dans la filière du poulet local ?",
+      id: 25,
+      question: "En un mot, qu’attendez-vous du poulet local idéal ?",
       options: [],
     },
   ];
@@ -226,7 +223,7 @@ const RandomSurveyForm = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Enquête Restaurateurs</Text>
+      <Text style={styles.title}>Enquête Focus Groupe</Text>
       <View style={styles.form}>
 
         {/* Nom */}
@@ -353,14 +350,14 @@ const styles = StyleSheet.create({
   form: {
     width: "100%",
     maxWidth: 400,
-    backgroundColor: "white",
+    backgroundColor: "white", // Fond blanc uniquement pour le formulaire
     padding: 20,
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 3, // Ombre pour effet légèrement surélevé
   },
   questionContainer: {
     marginBottom: 15,

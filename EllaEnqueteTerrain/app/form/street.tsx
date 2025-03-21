@@ -51,7 +51,7 @@ const ConsumerSurveyForm = () => {
         {/* Questions */}
         {questions.map((q, index) => (
           <View key={index}>
-            <Text style={styles.label}>{q.label}</Text>
+            <Text style={styles.label}>{`${index + 1}. ${q.label}`}</Text>
             <Controller
               control={control}
               render={({ field }) => (
@@ -118,6 +118,14 @@ const styles = StyleSheet.create({
   form: {
     width: "100%",
     maxWidth: 400,
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   label: {
     fontSize: 16,
@@ -144,7 +152,7 @@ const styles = StyleSheet.create({
   quitButton: {
     height: 50,
     borderRadius: 5,
-    backgroundColor: "#8b0000",
+    backgroundColor: "#deb078",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
