@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const questions = [
@@ -218,46 +219,63 @@ const RandomSurveyForm = () => {
   const [currentQuestions, setCurrentQuestions] = useState(getRandomQuestions());
 
   
-  const onSubmit = (data) => {
-    console.log("Données soumises :", data);
-    reset(); // Réinitialiser le formulaire
-    setCurrentQuestions(getRandomQuestions()); // Générer un nouveau groupe de questions
-  };
+  const onSubmit = async (data) => {
+      console.log("Données du formulaire :", data);
+    
+      const formattedResponses = currentQuestions.map((q) => ({
+        question_id: q.id,
+        answer: Array.isArray(data[`question_${q.id}`])
+          ? data[`question_${q.id}`].join(", ")
+          : data[`question_${q.id}`] || "",
+      }));
+    
+      const payload = {
+        form_type_id: 1, 
+        responses: formattedResponses,
+      };
+    
+      try {
+        // Récupérer le token d'accès stocké
+        const token = await AsyncStorage.getItem("accessToken");
+    
+        if (!token) {
+          Alert.alert("Erreur", "Vous devez être connecté pour soumettre le formulaire.");
+          return;
+        }
+    
+        // Envoyer les données à l'API avec le token
+        const response = await fetch("https://lellagn-project.onrender.com/apiquiz-responses/create/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,  // 🔥 Ajout du token ici
+          },
+          body: JSON.stringify(payload),
+        });
+    
+        const rawResponse = await response.text();
+        console.log("Réponse brute de l'API :", rawResponse);
+    
+        const result = JSON.parse(rawResponse);
+    
+        if (response.ok) {
+          Alert.alert("Succès", "Vos réponses ont été soumises avec succès !");
+          reset();
+          setCurrentQuestions(getRandomQuestions());
+        } else {
+          Alert.alert("Erreur", result.message || "Une erreur s'est produite.");
+        }
+      } catch (error) {
+        console.error("Erreur lors de la soumission :", error);
+        Alert.alert("Erreur", "Une erreur s'est produite. Veuillez réessayer.");
+      }
+    };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Enquête Restaurateurs</Text>
       <View style={styles.form}>
 
-        {/* Nom */}
-        <Text style={styles.label}>Nom</Text>
-        <Controller
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              style={styles.input}
-              placeholder="Entrez votre nom"
-              value={field.value}
-              onChangeText={field.onChange}
-            />
-          )}
-          name="name"
-        />
-
-        {/* Prénom */}
-        <Text style={styles.label}>Prénom</Text>
-        <Controller
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              style={styles.input}
-              placeholder="Entrez votre prénom"
-              value={field.value}
-              onChangeText={field.onChange}
-            />
-          )}
-          name="firstName"
-        />
 
         {/* Questions aléatoires */}
         {currentQuestions.map((q, index) => (

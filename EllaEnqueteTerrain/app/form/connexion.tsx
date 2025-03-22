@@ -9,6 +9,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignScreen = () => {
   const [phone_number, setPhone] = useState("");
@@ -41,10 +42,21 @@ const SignScreen = () => {
 
       // Traiter la réponse
       const result = await response.json();
+      console.log("Réponse de l'API :", result);
 
       if (response.ok) {
         // Si la connexion est réussie
         Alert.alert("Succès", result.message || "Connexion réussie !");
+
+        // Stocker le token dans AsyncStorage
+        if (result.access) {
+          await AsyncStorage.setItem("userToken", result.access);
+          console.log("Token d'accès stocké avec succès !");
+        } else {
+          throw new Error("Aucun token reçu de l'API.");
+        }
+        
+
         // Rediriger l'utilisateur vers une autre page
         router.push("/form/page"); // Remplacez par la route souhaitée
       } else {
@@ -54,9 +66,10 @@ const SignScreen = () => {
     } catch (error) {
       // Gérer les erreurs réseau ou autres
       console.error("Erreur lors de la connexion :", error);
-      Alert.alert("Erreur", "Une erreur s'est produite. Veuillez réessayer.");
+      // Alert.alert("Erreur", error.message || "Une erreur s'est produite. Veuillez réessayer.");
     }
   };
+
 
 
   return (

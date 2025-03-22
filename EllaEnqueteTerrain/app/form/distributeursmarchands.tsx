@@ -2,185 +2,185 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const questions = [
-    {
-      id: 1,
-      question: "Quel type de commerce gérez-vous ?",
-      options: ["Marché traditionnel", "Supermarché", "Boucherie spécialisée", "Vente en ligne", "Autre (préciser)"],
-    },
-    {
-      id: 2,
-      question: "Depuis combien de temps vendez-vous du poulet ?",
-      options: ["Moins d’un an", "1 à 3 ans", "Plus de 3 ans"],
-    },
-    {
-      id: 3,
-      question: "Quelle quantité de poulets vendez-vous chaque jour en moyenne ?",
-      options: ["Moins de 10", "10 à 20", "21 à 50", "Plus de 50"],
-    },
-    {
-      id: 4,
-      question: "Quel type de poulet vendez-vous principalement ?",
-      options: ["Local", "Importé", "Les deux"],
-    },
-    {
-      id: 5,
-      question: "Quel format de poulet est le plus vendu dans votre commerce ?",
-      options: ["Poulet entier", "Poulet vidé prêt à cuire", "Poulet découpé (filets, cuisses, ailes)"],
-    },
-    {
-      id: 6,
-      question: "Où achetez-vous principalement vos poulets ?",
-      options: ["Producteurs locaux", "Grossistes", "Importateurs", "Autre (préciser)"],
-    },
-    {
-      id: 7,
-      question: "À quelle fréquence passez-vous vos commandes ?",
-      options: ["Tous les jours", "2 à 3 fois par semaine", "Une fois par semaine", "Moins d’une fois par semaine"],
-    },
-    {
-      id: 8,
-      question: "Avez-vous un fournisseur attitré ?",
-      options: ["Oui", "Non"],
-    },
-    {
-      id: 9,
-      question: "Quels sont vos critères principaux pour choisir un fournisseur ?",
-      options: ["Prix", "Régularité de l’approvisionnement", "Qualité du poulet", "Service de livraison"],
-    },
-    {
-      id: 10,
-      question: "Quel délai de livraison vous conviendrait le mieux ?",
-      options: ["Moins de 2 heures", "2 à 6 heures", "Livraison programmée la veille"],
-    },
-    {
-      id: 11,
-      question: "Comment stockez-vous vos poulets avant la vente ?",
-      options: ["Congélateur", "Réfrigérateur", "Glace / Glacière", "Pas de stockage, vente immédiate"],
-    },
-    {
-      id: 12,
-      question: "Quelle est la durée moyenne de stockage avant la vente ?",
-      options: ["Moins de 24h", "2 à 3 jours", "4 à 7 jours", "Plus d’une semaine"],
-    },
-    {
-      id: 13,
-      question: "Avez-vous rencontré des problèmes de conservation du poulet ?",
-      options: ["Oui", "Non"],
-    },
-    {
-      id: 14,
-      question: "Quelles sont vos attentes en termes de qualité du poulet ?",
-      options: ["Chair tendre", "Bonne conservation", "Moins de gras", "Odeur agréable"],
-    },
-    {
-      id: 15,
-      question: "Préférez-vous recevoir des poulets emballés sous vide ou en vrac ?",
-      options: ["Sous vide", "En vrac", "Indifférent"],
-    },
-    {
-      id: 16,
-      question: "Vos clients préfèrent-ils le poulet local ou importé ?",
-      options: ["Local", "Importé", "Indifférent"],
-    },
-    {
-      id: 17,
-      question: "Quels formats de poulet sont les plus achetés par vos clients ?",
-      options: ["Poulet entier", "Poulet vidé prêt à cuire", "Poulet découpé (filets, cuisses, ailes)"],
-    },
-    {
-      id: 18,
-      question: "Vos clients posent-ils des questions sur la provenance du poulet ?",
-      options: ["Oui, souvent", "Oui, parfois", "Non"],
-    },
-    {
-      id: 19,
-      question: "Quel est l’argument de vente le plus important pour vos clients ?",
-      options: ["Prix", "Qualité / fraîcheur", "Origine locale", "Format du produit"],
-    },
-    {
-      id: 20,
-      question: "Avez-vous remarqué une évolution des habitudes de consommation des clients ces dernières années ?",
-      options: ["Oui, plus de demande pour le local", "Oui, plus de demande pour l’importé", "Non, la demande reste stable"],
-    },
-    {
-      id: 21,
-      question: "Quel est votre prix de vente moyen par poulet ?",
-      options: ["Moins de 50 000 GNF", "50 000 - 70 000 GNF", "Plus de 70 000 GNF"],
-    },
-    {
-      id: 22,
-      question: "Quel est votre prix d’achat moyen par poulet ?",
-      options: ["Moins de 40 000 GNF", "40 000 - 60 000 GNF", "Plus de 60 000 GNF"],
-    },
-    {
-      id: 23,
-      question: "Quel est votre niveau de marge sur chaque poulet vendu ?",
-      options: ["Moins de 5 000 GNF", "5 000 - 10 000 GNF", "Plus de 10 000 GNF"],
-    },
-    {
-      id: 24,
-      question: "Avez-vous observé des fluctuations importantes des prix ces derniers mois ?",
-      options: ["Oui", "Non"],
-    },
-    {
-      id: 25,
-      question: "Quels sont les principaux facteurs qui influencent les prix du poulet sur le marché ?",
-      options: ["Coût des aliments pour volaille", "Saison et demande fluctuante", "Taxes et coûts d’importation", "Autre (préciser)"],
-    },
-    {
-      id: 26,
-      question: "Comment évaluez-vous votre expérience avec vos fournisseurs actuels ?",
-      options: ["Très satisfait(e)", "Assez satisfait(e)", "Peu satisfait(e)", "Pas du tout satisfait(e)"],
-    },
-    {
-      id: 27,
-      question: "Quels sont les problèmes les plus fréquents rencontrés avec vos fournisseurs ?",
-      options: ["Qualité variable", "Rupture de stock fréquente", "Retards de livraison", "Prix instables"],
-    },
-    {
-      id: 28,
-      question: "Êtes-vous intéressé(e) par un fournisseur exclusif de poulet local de qualité ?",
-      options: ["Oui", "Non", "Peut-être"],
-    },
-    {
-      id: 29,
-      question: "Seriez-vous prêt(e) à signer un contrat d’approvisionnement avec un producteur local ?",
-      options: ["Oui", "Non", "À voir selon les conditions"],
-    },
-    {
-      id: 30,
-      question: "Quel volume de poulets pourriez-vous acheter par semaine si l’offre locale répondait à vos attentes ?",
-      options: ["Moins de 20", "20 à 50", "50 à 100", "Plus de 100"],
-    },
-    {
-      id: 31,
-      question: "Seriez-vous intéressé(e) par un programme de fidélité avec des producteurs locaux ?",
-      options: [],
-    },
-    {
-      id: 32,
-      question: "Quel soutien attendez-vous des producteurs pour améliorer votre activité ?",
-      options: [],
-    },
-    {
-      id: 33,
-      question: "Quelles actions les producteurs locaux pourraient-ils entreprendre pour mieux répondre à vos besoins ?",
-      options: [],
-    },
-    {
-      id: 34,
-      question: "Que faudrait-il améliorer dans l’offre de poulet local pour le rendre plus compétitif ?",
-      options: [],
-    },
-    {
-      id: 35,
-      question: "Souhaitez-vous voir plus de promotions et réductions sur le poulet local ?",
-      options: [],
-    },
-  ];
+  {
+    id: 1,
+    question: "Quel type de commerce gérez-vous ?",
+    options: ["Marché traditionnel", "Supermarché", "Boucherie spécialisée", "Vente en ligne", "Autre (préciser)"],
+  },
+  {
+    id: 2,
+    question: "Depuis combien de temps vendez-vous du poulet ?",
+    options: ["Moins d’un an", "1 à 3 ans", "Plus de 3 ans"],
+  },
+  {
+    id: 3,
+    question: "Quelle quantité de poulets vendez-vous chaque jour en moyenne ?",
+    options: ["Moins de 10", "10 à 20", "21 à 50", "Plus de 50"],
+  },
+  {
+    id: 4,
+    question: "Quel type de poulet vendez-vous principalement ?",
+    options: ["Local", "Importé", "Les deux"],
+  },
+  {
+    id: 5,
+    question: "Quel format de poulet est le plus vendu dans votre commerce ?",
+    options: ["Poulet entier", "Poulet vidé prêt à cuire", "Poulet découpé (filets, cuisses, ailes)"],
+  },
+  {
+    id: 6,
+    question: "Où achetez-vous principalement vos poulets ?",
+    options: ["Producteurs locaux", "Grossistes", "Importateurs", "Autre (préciser)"],
+  },
+  {
+    id: 7,
+    question: "À quelle fréquence passez-vous vos commandes ?",
+    options: ["Tous les jours", "2 à 3 fois par semaine", "Une fois par semaine", "Moins d’une fois par semaine"],
+  },
+  {
+    id: 8,
+    question: "Avez-vous un fournisseur attitré ?",
+    options: ["Oui", "Non"],
+  },
+  {
+    id: 9,
+    question: "Quels sont vos critères principaux pour choisir un fournisseur ?",
+    options: ["Prix", "Régularité de l’approvisionnement", "Qualité du poulet", "Service de livraison"],
+  },
+  {
+    id: 10,
+    question: "Quel délai de livraison vous conviendrait le mieux ?",
+    options: ["Moins de 2 heures", "2 à 6 heures", "Livraison programmée la veille"],
+  },
+  {
+    id: 11,
+    question: "Comment stockez-vous vos poulets avant la vente ?",
+    options: ["Congélateur", "Réfrigérateur", "Glace / Glacière", "Pas de stockage, vente immédiate"],
+  },
+  {
+    id: 12,
+    question: "Quelle est la durée moyenne de stockage avant la vente ?",
+    options: ["Moins de 24h", "2 à 3 jours", "4 à 7 jours", "Plus d’une semaine"],
+  },
+  {
+    id: 13,
+    question: "Avez-vous rencontré des problèmes de conservation du poulet ?",
+    options: ["Oui", "Non"],
+  },
+  {
+    id: 14,
+    question: "Quelles sont vos attentes en termes de qualité du poulet ?",
+    options: ["Chair tendre", "Bonne conservation", "Moins de gras", "Odeur agréable"],
+  },
+  {
+    id: 15,
+    question: "Préférez-vous recevoir des poulets emballés sous vide ou en vrac ?",
+    options: ["Sous vide", "En vrac", "Indifférent"],
+  },
+  {
+    id: 16,
+    question: "Vos clients préfèrent-ils le poulet local ou importé ?",
+    options: ["Local", "Importé", "Indifférent"],
+  },
+  {
+    id: 17,
+    question: "Quels formats de poulet sont les plus achetés par vos clients ?",
+    options: ["Poulet entier", "Poulet vidé prêt à cuire", "Poulet découpé (filets, cuisses, ailes)"],
+  },
+  {
+    id: 18,
+    question: "Vos clients posent-ils des questions sur la provenance du poulet ?",
+    options: ["Oui, souvent", "Oui, parfois", "Non"],
+  },
+  {
+    id: 19,
+    question: "Quel est l’argument de vente le plus important pour vos clients ?",
+    options: ["Prix", "Qualité / fraîcheur", "Origine locale", "Format du produit"],
+  },
+  {
+    id: 20,
+    question: "Avez-vous remarqué une évolution des habitudes de consommation des clients ces dernières années ?",
+    options: ["Oui, plus de demande pour le local", "Oui, plus de demande pour l’importé", "Non, la demande reste stable"],
+  },
+  {
+    id: 21,
+    question: "Quel est votre prix de vente moyen par poulet ?",
+    options: ["Moins de 50 000 GNF", "50 000 - 70 000 GNF", "Plus de 70 000 GNF"],
+  },
+  {
+    id: 22,
+    question: "Quel est votre prix d’achat moyen par poulet ?",
+    options: ["Moins de 40 000 GNF", "40 000 - 60 000 GNF", "Plus de 60 000 GNF"],
+  },
+  {
+    id: 23,
+    question: "Quel est votre niveau de marge sur chaque poulet vendu ?",
+    options: ["Moins de 5 000 GNF", "5 000 - 10 000 GNF", "Plus de 10 000 GNF"],
+  },
+  {
+    id: 24,
+    question: "Avez-vous observé des fluctuations importantes des prix ces derniers mois ?",
+    options: ["Oui", "Non"],
+  },
+  {
+    id: 25,
+    question: "Quels sont les principaux facteurs qui influencent les prix du poulet sur le marché ?",
+    options: ["Coût des aliments pour volaille", "Saison et demande fluctuante", "Taxes et coûts d’importation", "Autre (préciser)"],
+  },
+  {
+    id: 26,
+    question: "Comment évaluez-vous votre expérience avec vos fournisseurs actuels ?",
+    options: ["Très satisfait(e)", "Assez satisfait(e)", "Peu satisfait(e)", "Pas du tout satisfait(e)"],
+  },
+  {
+    id: 27,
+    question: "Quels sont les problèmes les plus fréquents rencontrés avec vos fournisseurs ?",
+    options: ["Qualité variable", "Rupture de stock fréquente", "Retards de livraison", "Prix instables"],
+  },
+  {
+    id: 28,
+    question: "Êtes-vous intéressé(e) par un fournisseur exclusif de poulet local de qualité ?",
+    options: ["Oui", "Non", "Peut-être"],
+  },
+  {
+    id: 29,
+    question: "Seriez-vous prêt(e) à signer un contrat d’approvisionnement avec un producteur local ?",
+    options: ["Oui", "Non", "À voir selon les conditions"],
+  },
+  {
+    id: 30,
+    question: "Quel volume de poulets pourriez-vous acheter par semaine si l’offre locale répondait à vos attentes ?",
+    options: ["Moins de 20", "20 à 50", "50 à 100", "Plus de 100"],
+  },
+  {
+    id: 31,
+    question: "Seriez-vous intéressé(e) par un programme de fidélité avec des producteurs locaux ?",
+    options: [],
+  },
+  {
+    id: 32,
+    question: "Quel soutien attendez-vous des producteurs pour améliorer votre activité ?",
+    options: [],
+  },
+  {
+    id: 33,
+    question: "Quelles actions les producteurs locaux pourraient-ils entreprendre pour mieux répondre à vos besoins ?",
+    options: [],
+  },
+  {
+    id: 34,
+    question: "Que faudrait-il améliorer dans l’offre de poulet local pour le rendre plus compétitif ?",
+    options: [],
+  },
+  {
+    id: 35,
+    question: "Souhaitez-vous voir plus de promotions et réductions sur le poulet local ?",
+    options: [],
+  },
+];
 
 const getRandomQuestions = () => {
   let shuffled = [...questions].sort(() => 0.5 - Math.random());
@@ -192,38 +192,50 @@ const RandomSurveyForm = () => {
   const navigation = useNavigation();
   const [currentQuestions, setCurrentQuestions] = useState(getRandomQuestions());
 
-
+  
   const onSubmit = async (data) => {
-    console.log("Données du formulaire :", data); // Affichez les données dans la console
+    console.log("Données du formulaire :", data);
+  
     const formattedResponses = currentQuestions.map((q) => ({
       question_id: q.id,
       answer: Array.isArray(data[`question_${q.id}`])
-        ? data[`question_${q.id}`].join(", ") // Si plusieurs réponses, les joindre
-        : data[`question_${q.id}`] || "", // Sinon, utiliser la réponse unique
+        ? data[`question_${q.id}`].join(", ")
+        : data[`question_${q.id}`] || "",
     }));
-    console.log("Réponses formatées :", formattedResponses); // Affichez les réponses formatées
-    // Données à envoyer à l'API
+  
     const payload = {
-      form_type_id: 1, // ID du formulaire (à adapter selon le formulaire)
+      form_type_id: 1, 
       responses: formattedResponses,
     };
-
+  
     try {
-      // Envoyer les données à l'API
+      // Récupérer le token d'accès stocké
+      const token = await AsyncStorage.getItem("accessToken");
+  
+      if (!token) {
+        Alert.alert("Erreur", "Vous devez être connecté pour soumettre le formulaire.");
+        return;
+      }
+  
+      // Envoyer les données à l'API avec le token
       const response = await fetch("https://lellagn-project.onrender.com/apiquiz-responses/create/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,  // 🔥 Ajout du token ici
         },
         body: JSON.stringify(payload),
       });
-
-      const result = await response.json();
-
+  
+      const rawResponse = await response.text();
+      console.log("Réponse brute de l'API :", rawResponse);
+  
+      const result = JSON.parse(rawResponse);
+  
       if (response.ok) {
         Alert.alert("Succès", "Vos réponses ont été soumises avec succès !");
-        reset(); // Réinitialiser le formulaire
-        setCurrentQuestions(getRandomQuestions()); // Générer un nouveau groupe de questions
+        reset();
+        setCurrentQuestions(getRandomQuestions());
       } else {
         Alert.alert("Erreur", result.message || "Une erreur s'est produite.");
       }
@@ -232,41 +244,13 @@ const RandomSurveyForm = () => {
       Alert.alert("Erreur", "Une erreur s'est produite. Veuillez réessayer.");
     }
   };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Enquête Distributeurs et Marchands</Text>
       <View style={styles.form}>
 
-        {/* Nom */}
-        <Text style={styles.label}>Nom</Text>
-        <Controller
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              style={styles.input}
-              placeholder="Entrez votre nom"
-              value={field.value}
-              onChangeText={field.onChange}
-            />
-          )}
-          name="name"
-        />
-
-        {/* Prénom */}
-        <Text style={styles.label}>Prénom</Text>
-        <Controller
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              style={styles.input}
-              placeholder="Entrez votre prénom"
-              value={field.value}
-              onChangeText={field.onChange}
-            />
-          )}
-          name="firstName"
-        />
 
         {/* Questions aléatoires */}
         {currentQuestions.map((q, index) => (

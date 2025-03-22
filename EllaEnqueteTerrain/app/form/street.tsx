@@ -1,16 +1,64 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ConsumerSurveyForm = () => {
   const { control, handleSubmit, reset, formState: { errors } } = useForm();
   const navigation = useNavigation();
 
-  const onSubmit = (data) => {
-    console.log("Données soumises :", data);
-    reset(); // Réinitialise le formulaire après soumission
-  };
+  const onSubmit = async (data) => {
+      console.log("Données du formulaire :", data);
+    
+      const formattedResponses = currentQuestions.map((q) => ({
+        question_id: q.id,
+        answer: Array.isArray(data[`question_${q.id}`])
+          ? data[`question_${q.id}`].join(", ")
+          : data[`question_${q.id}`] || "",
+      }));
+    
+      const payload = {
+        form_type_id: 1, 
+        responses: formattedResponses,
+      };
+    
+      try {
+        // Récupérer le token d'accès stocké
+        const token = await AsyncStorage.getItem("accessToken");
+    
+        if (!token) {
+          Alert.alert("Erreur", "Vous devez être connecté pour soumettre le formulaire.");
+          return;
+        }
+    
+        // Envoyer les données à l'API avec le token
+        const response = await fetch("https://lellagn-project.onrender.com/apiquiz-responses/create/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,  // 🔥 Ajout du token ici
+          },
+          body: JSON.stringify(payload),
+        });
+    
+        const rawResponse = await response.text();
+        console.log("Réponse brute de l'API :", rawResponse);
+    
+        const result = JSON.parse(rawResponse);
+    
+        if (response.ok) {
+          Alert.alert("Succès", "Vos réponses ont été soumises avec succès !");
+          reset();
+          setCurrentQuestions(getRandomQuestions());
+        } else {
+          Alert.alert("Erreur", result.message || "Une erreur s'est produite.");
+        }
+      } catch (error) {
+        console.error("Erreur lors de la soumission :", error);
+        Alert.alert("Erreur", "Une erreur s'est produite. Veuillez réessayer.");
+      }
+    };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -18,36 +66,7 @@ const ConsumerSurveyForm = () => {
       <Text style={styles.subtitle}>Merci de répondre aux questions suivantes :</Text>
 
       <View style={styles.form}>
-        {/* Nom */}
-        <Text style={styles.label}>Nom</Text>
-        <Controller
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              style={styles.input}
-              placeholder="Entrez votre nom"
-              value={field.value}
-              onChangeText={field.onChange}
-            />
-          )}
-          name="name"
-        />
-
-        {/* Prénom */}
-        <Text style={styles.label}>Prénom</Text>
-        <Controller
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              style={styles.input}
-              placeholder="Entrez votre prénom"
-              value={field.value}
-              onChangeText={field.onChange}
-            />
-          )}
-          name="firstName"
-        />
-
+      
         {/* Questions */}
         {questions.map((q, index) => (
           <View key={index}>
